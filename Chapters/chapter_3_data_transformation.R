@@ -209,3 +209,97 @@ flights |>
 
 flights |> 
   select(where(is.character))
+
+# There are a number of helper functions you can use within select():
+  
+# starts_with("abc"): matches names that begin with “abc”.
+# ends_with("xyz"): matches names that end with “xyz”.
+# contains("ijk"): matches names that contain “ijk”.
+# num_range("x", 1:3): matches x1, x2 and x3.
+
+# You can rename variables as you select() them by using =. The new 
+# name appears on the left-hand side of the =, and the old variable 
+# appears on the right-hand side:'
+
+flights |> 
+  select(tail_num = tailnum)
+
+
+# rename() keep all the existing variables and rename a few columns at once.
+# better to use instead on selct() for multiple columns
+  
+flights |> 
+  rename(tail_num = tailnum)
+
+# similar to the previous verb, relocate() keep all the existing variables
+# and relocate a few columns at once.
+# Default setting will send columns to the left of the tibble, but it is 
+# possible to use .after and .before arguments, just like in mutate()
+
+flights |> 
+  relocate()
+
+
+# So far we learned about functions that work with rows and columns. 
+# dplyr gets even more powerful when you add in the ability to work with 
+# groups. In this section, we’ll focus on the most important functions: 
+# group_by(), summarize(), and the slice family of functions.
+
+
+# group_by() doesn’t change the data but, if you look closely at the 
+# output, you’ll notice that the output indicates that it is “grouped by”
+# month (Groups: month [12]). This means subsequent operations will now 
+# work “by month”. group_by() adds this grouped feature (referred to as 
+# class) to the data frame, which changes the behavior of the subsequent
+# verbs applied to the data.
+flights |> 
+  group_by(month)
+
+
+# The most important grouped operation is a summary, which, if being used
+# to calculate a single summary statistic, reduces the data frame to have
+# a single row for each group. In dplyr, this operation is performed by 
+# summarize(), as shown by the following example, which computes the 
+# average departure delay by month:
+
+flights |> 
+  group_by(month) |> 
+  summarize()
+
+flights |> 
+  group_by(month) |> 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE)
+  )
+
+# We can create any number of summaries in a single call to summarize(). 
+# We’ll learn various useful summaries in the upcoming chapters, but one 
+# very useful summary is n(), which returns the number of rows in each 
+# group:
+
+flights |> 
+  group_by(month) |> 
+  summarize(
+    avg_delay = mean(dep_delay, na.rm = TRUE),
+    n = n()
+  )
+
+
+# There are five handy functions that allow you to extract specific rows 
+# within each group:
+  
+# df |> slice_head(n = 1) takes the first row from each group.
+# df |> slice_tail(n = 1) takes the last row in each group.
+# df |> slice_min(x, n = 1) takes the row with the smallest value of column x.
+# df |> slice_max(x, n = 1) takes the row with the largest value of column x.
+# df |> slice_sample(n = 1) takes one random row.
+
+# You can vary n to select more than one row, or instead of n =, you can 
+# use prop = 0.1 to select (e.g.) 10% of the rows in each group. For 
+# example, the following code finds the flights that are most delayed 
+# upon arrival at each destination:
+
+
+
+
+
